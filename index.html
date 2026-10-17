@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1c - Full Page Exercises</title>
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #e91e63;
+            --primary-light: #f8bbd0;
+            --text-main: #333;
+            --text-muted: #666;
+            --bg-color: #f4f7f6;
+            --success: #4CAF50;
+            --success-bg: #e8f5e9;
+            --error: #f44336;
+            --error-bg: #ffebee;
+            --reveal: #2196F3;
+            --reveal-bg: #e3f2fd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px 120px 20px; /* Bottom padding for sticky footer */
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: #fff;
+            max-width: 850px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        }
+
+        /* Global Page Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .page-number {
+            background-color: var(--primary);
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            padding: 10px 30px;
+            border-radius: 50px;
+            transform: skewX(-15deg);
+        }
+        .page-number span { display: inline-block; transform: skewX(15deg); }
+
+        /* Exercise Blocks */
+        .exercise-block {
+            margin-bottom: 50px;
+        }
+
+        .exercise-title {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ex-num {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-light);
+            line-height: 1;
+        }
+
+        .ex-instruction {
+            font-size: 1.1rem;
+            color: #444;
+            font-weight: 600;
+        }
+
+        .ex-instruction em {
+            font-style: italic;
+            color: var(--primary);
+        }
+
+        /* Inputs */
+        input[type="text"] {
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 4px 8px;
+            border: none;
+            border-bottom: 2px dashed #999;
+            background-color: #fafafa;
+            color: #333;
+            text-align: center;
+            transition: all 0.3s;
+            border-radius: 4px 4px 0 0;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-bottom: 2px solid var(--primary);
+            background-color: #fff0f5;
+        }
+
+        /* Specific Input Widths */
+        .w-full { width: 100%; max-width: 600px; text-align: left; }
+        .w-long { width: 170px; }
+        .w-med { width: 130px; }
+        .w-short { width: 90px; }
+
+        /* Feedback States */
+        input.correct { border-bottom: 2px solid var(--success); background-color: var(--success-bg); color: #2e7d32; font-weight: bold; }
+        input.incorrect { border-bottom: 2px solid var(--error); background-color: var(--error-bg); color: #c62828; text-decoration: line-through; }
+        input.revealed { border-bottom: 2px solid var(--reveal); background-color: var(--reveal-bg); color: #1565c0; font-weight: bold; }
+
+        /* Helper Classes */
+        .hint { color: var(--text-muted); font-style: italic; font-size: 0.95rem; }
+        .q-num { font-weight: bold; color: #888; margin-right: 5px; }
+
+        /* EXERCISE 1 SPECIFIC */
+        .dialogue-block { margin-bottom: 25px; }
+        .dialogue-line { margin-bottom: 10px; display: flex; align-items: baseline; gap: 10px; }
+        .speaker { font-weight: bold; width: 20px; }
+        .prompt { color: #888; font-style: italic; font-size: 0.9rem; margin-bottom: 5px; display: block; }
+
+        /* EXERCISE 2 & 4 SPECIFIC */
+        .inline-q { margin-bottom: 15px; font-size: 1.05rem; line-height: 2.2; }
+        .indent { margin-left: 25px; }
+
+        /* EXERCISE 3 SPECIFIC (Email) */
+        .email-window {
+            border: 3px solid #b3b3db;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .email-header {
+            background-color: #b3b3db;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .window-dots { display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot.r { background: #ff5f56; } .dot.y { background: #ffbd2e; } .dot.g { background: #27c93f; }
+        .email-title { font-weight: bold; color: white; font-size: 1.2rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); flex-grow: 1; text-align: center; padding-right: 50px; }
+        .email-body { padding: 30px; font-size: 1.05rem; line-height: 2.6; background: #fdfdfd; }
+        .email-body input { width: 140px; }
+        .email-body .w-long { width: 180px; }
+
+        /* Sticky Controls */
+        .sticky-controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        button:active { transform: scale(0.98); }
+        #check-all { background-color: var(--success); color: white; }
+        #check-all:hover { background-color: #45a049; }
+        #show-all { background-color: var(--reveal); color: white; }
+        #show-all:hover { background-color: #1976D2; }
+        #reset-all { background-color: #eee; color: #555; border: 1px solid #ddd; }
+        #reset-all:hover { background-color: #ddd; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-number"><span>1c</span></div>
+        </div>
+
+        <!-- ==========================================
+             EXERCISE 1: Present Tenses
+             ========================================== -->
+        <div class="exercise-block">
+            <div class="exercise-title">
+                <div class="ex-num">1</div>
+                <div class="ex-instruction">Form sentences in the correct present tense.</div>
+            </div>
+
+            <div class="dialogue-block">
+                <div class="dialogue-line">
+                    <div class="speaker">1 A:</div>
+                    <div style="flex: 1;">
+                        <span class="prompt">What/you/think/about/Ann?</span>
+                        <input type="text" class="w-full" data-answer="what do you think about ann" placeholder="Type the full sentence...">
+                    </div>
+                </div>
+                <div class="dialogue-line">
+                    <div class="speaker">B:</div>
+                    <div style="flex: 1;">
+                        <span class="prompt">I/not like/her. She/always/lie/to/people.</span>
+                        <input type="text" class="w-full" data-answer="i don't like her. she always lies to people|i do not like her. she always lies to people|i don't like her. she is always lying to people|i do not like her. she is always lying to people" placeholder="Type the full sentence...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="dialogue-block">
+                <div class="dialogue-line">
+                    <div class="speaker">2 A:</div>
+                    <div style="flex: 1;">
+                        <span class="prompt">We/go/to/the/cinema/later today. You/want/to/come?</span>
+                        <input type="text" class="w-full" data-answer="we are going to the cinema later today. do you want to come|we're going to the cinema later today. do you want to come" placeholder="Type the full sentence...">
+                    </div>
+                </div>
+                <div class="dialogue-line">
+                    <div class="speaker">B:</div>
+                    <div style="flex: 1;">
+                        <span class="prompt">Sure. It/sound/like/a good idea.</span>
+                        <input type="text" class="w-full" data-answer="sure. it sounds like a good idea|sure it sounds like a good idea" placeholder="Type the full sentence...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="dialogue-block">
+                <div class="dialogue-line">
+                    <div class="speaker">3 A:</div>
+                    <div style="flex: 1;">
+                        <span class="prompt">Let's/go/to/park.</span>
+                        <input type="text" class="w-full" data-answer="let's go to the park|let us go to the park" placeholder="Type the full sentence...">
+                    </div>
+                </div>
+                <div class="dialogue-line">
+                    <div class="speaker">B:</div>
+                    <div style="flex: 1;">
+                        <span class="prompt">Sorry/I/not can. I/not/finish/the/homework/yet.</span>
+                        <input type="text" class="w-full" data-answer="sorry, i can't. i haven't finished the homework yet|sorry i can't. i haven't finished the homework yet|sorry, i cannot. i have not finished the homework yet|sorry i cannot. i have not finished the homework yet" placeholder="Type the full sentence...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="dialogue-block">
+                <div class="dialogue-line">
+                    <div class="speaker">4 A:</div>
+                    <div style="flex: 1;">
+                        <span class="prompt">The/train/be/so late/today!</span>
+                        <input type="text" class="w-full" data-answer="the train is so late today|the train's so late today" placeholder="Type the full sentence...">
+                    </div>
+                </div>
+                <div class="dialogue-line">
+                    <div class="speaker">B:</div>
+                    <div style="flex: 1;">
+                        <span class="prompt">Really?/How long/you/wait?</span>
+                        <input type="text" class="w-full" data-answer="really? how long have you been waiting|really how long have you been waiting" placeholder="Type the full sentence...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             EXERCISE 2: Past Simple / Continuous
+             ========================================== -->
+        <div class="exercise-block">
+            <div class="exercise-title">
+                <div class="ex-num">2</div>
+                <div class="ex-instruction">Put the verbs in brackets into the <em>past simple</em> or the <em>past continuous</em>.</div>
+            </div>
+
+            <div class="inline-q">
+                <span class="q-num">1 A:</span> When <input type="text" class="w-med" data-answer="did you start" placeholder="..."> <span class="hint">(you/start)</span> learning French?<br>
+                <div class="indent"><span class="q-num">B:</span> Two years ago while I <input type="text" class="w-med" data-answer="was preparing" placeholder="..."> <span class="hint">(prepare)</span> for my A levels.</div>
+            </div>
+
+            <div class="inline-q">
+                <span class="q-num">2 A:</span> I <input type="text" class="w-med" data-answer="didn't know|did not know" placeholder="..."> <span class="hint">(not/know)</span> you had a dog.<br>
+                <div class="indent"><span class="q-num">B:</span> I <input type="text" class="w-short" data-answer="found" placeholder="..."> <span class="hint">(find)</span> her on the street a month ago while I <input type="text" class="w-med" data-answer="was walking" placeholder="..."> <span class="hint">(walk)</span> back from school.</div>
+            </div>
+
+            <div class="inline-q">
+                <span class="q-num">3 A:</span> Julie (pass) <input type="text" class="w-short" data-answer="passed" placeholder="..."> all her exams.<br>
+                <div class="indent"><span class="q-num">B:</span> Yes, I know. She <input type="text" class="w-short" data-answer="told" placeholder="..."> <span class="hint">(tell)</span> me the good news while we <input type="text" class="w-med" data-answer="were having" placeholder="..."> <span class="hint">(have)</span> lunch.</div>
+            </div>
+
+            <div class="inline-q">
+                <span class="q-num">4 A:</span> <input type="text" class="w-med" data-answer="did you clean" placeholder="..."> <span class="hint">(you/clean)</span> the attic?<br>
+                <div class="indent"><span class="q-num">B:</span> Yes, and I <input type="text" class="w-short" data-answer="came" placeholder="..."> <span class="hint">(come)</span> across my yearbook!</div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             EXERCISE 3: Email (Mixed Tenses)
+             ========================================== -->
+        <div class="exercise-block">
+            <div class="exercise-title">
+                <div class="ex-num">3</div>
+                <div class="ex-instruction">Put the verbs in brackets in the correct tense.</div>
+            </div>
+
+            <div class="email-window">
+                <div class="email-header">
+                    <div class="window-dots">
+                        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+                    </div>
+                    <div class="email-title">email</div>
+                    <div style="width: 40px;"></div> <!-- Spacer for centering -->
+                </div>
+                <div class="email-body">
+                    <p>Hi Katie,</p>
+                    <p>
+                        How are you? Yesterday while I <span class="q-num">1)</span> <input type="text" data-answer="was cleaning" placeholder="..."> <span class="hint">(clean)</span> the attic, I <span class="q-num">2)</span> <input type="text" class="w-short" data-answer="came" placeholder="..."> <span class="hint">(come)</span> across some old photos from school so I <span class="q-num">3)</span> <input type="text" class="w-short" data-answer="thought" placeholder="..."> <span class="hint">(think)</span> of you! We <span class="q-num">4)</span> <input type="text" class="w-long" data-answer="have both changed|both have changed|'ve both changed" placeholder="..."> <span class="hint">(both/change)</span> in the last few years!
+                    </p>
+                    <p>
+                        I <span class="q-num">5)</span> <input type="text" class="w-long" data-answer="have been studying|'ve been studying" placeholder="..."> <span class="hint">(study)</span> really hard lately because I really <span class="q-num">6)</span> <input type="text" class="w-short" data-answer="want" placeholder="..."> <span class="hint">(want)</span> to win the scholarship I <span class="q-num">7)</span> <input type="text" class="w-short" data-answer="told" placeholder="..."> <span class="hint">(tell)</span> you about the last time you <span class="q-num">8)</span> <input type="text" class="w-short" data-answer="were" placeholder="..."> <span class="hint">(be)</span> in town. I rarely <span class="q-num">9)</span> <input type="text" class="w-short" data-answer="go" placeholder="..."> <span class="hint">(go)</span> out because I have so much work to do. I <span class="q-num">10)</span> <input type="text" class="w-med" data-answer="didn't even go|did not even go" placeholder="..."> <span class="hint">(even/not/go)</span> to Maria's birthday party last Friday.
+                    </p>
+                    <p>
+                        I <span class="q-num">11)</span> <input type="text" class="w-med" data-answer="am thinking|'m thinking" placeholder="..."> <span class="hint">(think)</span> of taking a break and coming to visit you next week. What <span class="q-num">12)</span> <input type="text" class="w-med" data-answer="do you think" placeholder="..."> <span class="hint">(you/think)</span>? I <span class="q-num">13)</span> <input type="text" class="w-long" data-answer="have already asked|'ve already asked" placeholder="..."> <span class="hint">(already/ask)</span> my mum and she <span class="q-num">14)</span> <input type="text" class="w-short" data-answer="agreed|has agreed|'s agreed" placeholder="..."> <span class="hint">(agree)</span>.
+                    </p>
+                    <p>
+                        Anyway, I must go. I think I <span class="q-num">15)</span> <input type="text" class="w-med" data-answer="will have|'ll have|am going to have|'m going to have" placeholder="..."> <span class="hint">(have)</span> an early night. I <span class="q-num">16)</span> <input type="text" class="w-long" data-answer="have just finished|'ve just finished" placeholder="..."> <span class="hint">(just/finish)</span> an essay on Hamlet and I <span class="q-num">17)</span> <input type="text" class="w-short" data-answer="feel|am feeling|'m feeling" placeholder="..."> <span class="hint">(feel)</span> really tired! Write back when you get some time!
+                    </p>
+                    <p>Kisses,<br>Emma</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             EXERCISE 4: Future Forms
+             ========================================== -->
+        <div class="exercise-block">
+            <div class="exercise-title">
+                <div class="ex-num">4</div>
+                <div class="ex-instruction">Use <em>will</em>, <em>are/is going to</em> or the <em>present continuous</em>.</div>
+            </div>
+
+            <div class="inline-q">1. We <input type="text" class="w-med" data-answer="are having" placeholder="..."> <span class="hint">(have)</span> dinner with the Smiths tomorrow night. Would you like to come?</div>
+            <div class="inline-q">2. Maria <input type="text" class="w-long" data-answer="is going to move" placeholder="..."> <span class="hint">(move)</span> to Boston in a month. She won a scholarship to Harvard University.</div>
+            <div class="inline-q">3. They <input type="text" class="w-med" data-answer="are flying" placeholder="..."> <span class="hint">(fly)</span> to Canada at 8 o'clock this evening.</div>
+            <div class="inline-q">4. I <input type="text" class="w-med" data-answer="will help|'ll help" placeholder="..."> <span class="hint">(help)</span> you write your essay on endangered species. I promise.</div>
+            <div class="inline-q">5. Be careful! You <input type="text" class="w-long" data-answer="are going to trip" placeholder="..."> <span class="hint">(trip)</span> over that toy!</div>
+            <div class="inline-q">6. Chris and Janet <input type="text" class="w-med" data-answer="are having" placeholder="..."> <span class="hint">(have)</span> a garden party on Saturday afternoon.</div>
+            <div class="inline-q">7. I haven't heard from Cathy since Friday. I <input type="text" class="w-med" data-answer="will send|'ll send" placeholder="..."> <span class="hint">(send)</span> her a text message.</div>
+            <div class="inline-q">8. They <input type="text" class="w-long" data-answer="are getting|are going to get" placeholder="..."> <span class="hint">(get)</span> married next summer.</div>
+        </div>
+
+    </div>
+
+    <!-- STICKY CONTROLS -->
+    <div class="sticky-controls">
+        <button id="check-all">Check All Answers</button>
+        <button id="show-all">Show Answers</button>
+        <button id="reset-all">Reset All</button>
+    </div>
+
+    <script>
+        // Select all inputs on the page that have a data-answer attribute
+        const inputs = document.querySelectorAll('input[type="text"][data-answer]');
+
+        // Normalize strings for forgiving comparison
+        function cleanString(str) {
+            return str
+                .toLowerCase()
+                .replace(/[.,!?;:'"]/g, '') // Remove all punctuation
+                .replace(/\s+/g, ' ')       // Collapse spaces
+                .trim();
+        }
+
+        // Capitalize first letter for "Show Answers"
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        // 1. Check Answers
+        document.getElementById('check-all').addEventListener('click', () => {
+            inputs.forEach(input => {
+                const userAnswer = cleanString(input.value);
+                const acceptableAnswers = input.getAttribute('data-answer').split('|');
+                
+                // Remove 'revealed' state if they check again
+                input.classList.remove('revealed');
+                
+                const isCorrect = acceptableAnswers.some(ans => cleanString(ans) === userAnswer);
+
+                if (userAnswer === '') {
+                    input.classList.remove('correct', 'incorrect');
+                } else if (isCorrect) {
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                } else {
+                    input.classList.remove('correct');
+                    input.classList.add('incorrect');
+                }
+            });
+        });
+
+        // 2. Show Answers
+        document.getElementById('show-all').addEventListener('click', () => {
+            inputs.forEach(input => {
+                const acceptableAnswers = input.getAttribute('data-answer').split('|');
+                input.value = capitalizeFirstLetter(acceptableAnswers[0]);
+                input.classList.remove('correct', 'incorrect');
+                input.classList.add('revealed');
+            });
+        });
+
+        // 3. Reset All
+        document.getElementById('reset-all').addEventListener('click', () => {
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect', 'revealed');
+            });
+        });
+
+        // Allow pressing "Enter" to check answers
+        inputs.forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('check-all').click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
